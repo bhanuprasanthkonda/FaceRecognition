@@ -7,7 +7,8 @@ class FaceRecognition:
     def __init__(self):
         self.trainedFaceData = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
         self.idName = None
-        self.model = None
+        faces, ids = self.trainingData("trainingData")
+        self.model = self.modelGenerator(faces,ids)
 
     def faceDetection(self, image):
         greyImg = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -22,11 +23,7 @@ class FaceRecognition:
         from collections import defaultdict
         faces = []
         ids = []
-
-        def defaultDictReturn():
-            return "Un-identified"
-
-        nameId = defaultdict(defaultDictReturn)
+        nameId = {}
         currentId = 1
         for imgPath in paths.list_images(path):
             name = imgPath.strip().split("\\")[-2]
@@ -51,26 +48,23 @@ class FaceRecognition:
         return model
 
     def putText(self, image, text, x, y):
-        cv2.putText(image, text, (x, y - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), 2)
+        cv2.putText(image, text, (x, y + 25), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), 2)
 
     def startUp(self, img):
         face_coordinates, greyImg = self.faceDetection(img)
         print(face_coordinates)
-        if len(face_coordinates):
-            x, y, h, w = face_coordinates[0]
-            greyImg = greyImg[y:y + h, x:x + w]
-            if not self.model:
-                faces, ids = self.trainingData('trainingData')
-                self.model = self.modelGenerator(faces, ids)
-            faceId, confidence = self.model.predict(greyImg)
+        for face_coordinate in face_coordinates:
+            x, y, h, w = face_coordinate
+            face = greyImg[y:y + h, x:x + w]
+            faceId, confidence = self.model.predict(face)
             print(faceId, confidence)
             self.boxDrawer(img, face_coordinates)
-            self.putText(img, self.idName[faceId], x, y)
+            self.putText(img, self.idName[faceId] if confidence < 70 else "Un-identified", x, y)
         return img
 
 
 if __name__ == "__main__":
-    img = cv2.imread('C:/Users/Bhanu Prasanth Konda/Desktop/photo.jpg')
+    img = cv2.imread('C:/Users/Bhanu Prasanth Konda/Desktop/9.png')
     img = FaceRecognition().startUp(img)
     cv2.imshow("photo (Press any key to close)", img)
     cv2.waitKey(0)

@@ -8,7 +8,7 @@ def liveVideoFeed():
     try:
         while True:
             successFullFrameRead, frame = cam.read()
-            frame = fr.startUp(frame)
+            frame = fr.startUp(cv2.flip(frame, 1))
             cv2.imshow("Live Face Detection", frame)
             if cv2.waitKey(1) != -1:
                 break
