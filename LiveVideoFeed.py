@@ -2,13 +2,13 @@ import cv2
 from FaceRecognition import FaceRecognition
 
 
-def VideoFeed():
-    cam = cv2.VideoCapture(input("Enter the video file path: ").strip())
+def liveVideoFeed():
+    cam = cv2.VideoCapture(0)
     fr = FaceRecognition()
     try:
         while True:
             successFullFrameRead, frame = cam.read()
-            frame = fr.startUp(frame)
+            frame = fr.startUp(cv2.flip(frame, 1))
             cv2.imshow("Live Face Detection", frame)
             if cv2.waitKey(1) != -1:
                 break
@@ -20,4 +20,4 @@ def VideoFeed():
 
 
 if __name__ == "__main__":
-    VideoFeed()
+    liveVideoFeed()
