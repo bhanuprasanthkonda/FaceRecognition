@@ -9,4 +9,6 @@ pip install imutils
 
 Run AddNewFace.py to add a new face
 
-Run VideoFeed.py for live face recognition
+Run LiveVideoFeed.py for live face recognition
+
+Run VideoFeed.py for using a video file
