@@ -26,7 +26,7 @@ class FaceRecognition:
         nameId = {}
         currentId = 1
         for imgPath in paths.list_images(path):
-            name = imgPath.strip().split("\\")[-2]
+            name = imgPath.strip().split("/")[-2]
             if name in nameId:
                 faceid = nameId[name]
             else:
